@@ -9,6 +9,7 @@ SO THAT I can keep a list of books to purchase
 Clone the github repo [here](https://github.com/MeaghanCampbell/book-search-engine).
 
 # Screenshot
+<img width="959" alt="Screen Shot 2021-05-07 at 12 01 54 PM" src="https://user-images.githubusercontent.com/74511935/117483940-0c9d7680-af2c-11eb-8236-c58d388c37e8.png">
 
 # Credits
 This app was refactored by Meaghan Campbell.
