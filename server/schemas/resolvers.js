@@ -3,13 +3,12 @@ const { User } = require('../models')
 const { AuthenticationError } = require('apollo-server-express')
 
 const { signToken } = require('../utils/auth')
-const { sign } = require('jsonwebtoken')
 
 const resolvers = {
     Query: {
         me: async(parent, args, context) => {
             if (context.user) {
-                const userData = await User.findOne({})
+                const userData = await User.findOne({_id: context.user._id})
                 .select('-__v -password')
                 .populate('bookCount')
                 .populate('savedBooks')
@@ -47,15 +46,15 @@ const resolvers = {
             return { token, user }
         },
 
-        saveBook: async (parent, args, context) => {
+        saveBook: async (parent, { book }, context) => {
             if (context.user) {
 
-                const updatedUser = await User.findOneAndUpdate(
-                    { _id: user._id },
-                    { $addToSet: { savedBooks: body } },
-                    { new: true, runValidators: true }
+                const addBook = await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $addToSet: { savedBooks: book } },
+                    { new: true }
                 );
-                return updatedUser
+                return addBook
 
             }
 
@@ -63,16 +62,16 @@ const resolvers = {
 
         },
 
-        removeBook: async (parent, args, context) => {
+        removeBook: async (parent, { bookId }, context) => {
 
             if (context.user) {
-                const updatedUser = await User.findOneAndUpdate(
-                    { _id: user._id },
-                    { $pull: { savedBooks: { bookId: args.bookId } } },
+                const removeBook = await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: { bookId: bookId } } },
                     { new: true }
                 )
     
-                return updatedUser
+                return removeBook
             }
             
             throw new AuthenticationError('You need to be logged in!');
